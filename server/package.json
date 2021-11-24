@@ -1,7 +1,7 @@
 {
-  "name": "apollo-upload",
+  "name": "fd-file-upload-eg-server",
   "version": "1.0.0",
-  "description": "Comprehensive guide on how to upload files with apollo-server and mongodb(a few tweaks can make it work for any database)",
+  "description": "...",
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon -r esm src/index.js"
