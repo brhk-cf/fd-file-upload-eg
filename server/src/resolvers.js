@@ -4,20 +4,10 @@ import * as fs from "fs";
 
 const unirest = require('unirest');
 
-const createPrivateNoteWithStoredFile = async function (path) {
-  const _path = "../" + path
 
-  try {
-    const steam = createReadStream(_path)
-    createPrivateNoteWithAttachments(steam)
-  }
-  catch (e) {
-    console.log("Err at reading saved file")
-    console.log(e)
-  }
-}
-
+// Method #1
 const createPrivateNoteWithAttachments = async function (attachment) {
+  console.log("createPrivateNoteWithAttachments ")
   const headers = {
     Authorization: apiKey,
     'Content-Type': 'multipart/form-data',
@@ -31,8 +21,6 @@ const createPrivateNoteWithAttachments = async function (attachment) {
   return unirest('POST', `https://${domain}.freshdesk.com/api/v2/tickets/${ticketId}/notes`)
     .headers(headers)
     .field(fields)
-
-    // .attach('attachments[]', fs.createReadStream("../images/fd1.jpeg"))
     .attach('attachments[]', attachment) //fileStream: read stream
     .end(function (response) {
       console.log("Response Body ", response.body)
@@ -46,6 +34,22 @@ const createPrivateNoteWithAttachments = async function (attachment) {
         return response
       }
     });
+}
+
+// Method #2
+const createPrivateNoteWithStoredFile = async function ({ stream, filename, mimetype }) {
+  const file = await storeUpload({ stream, filename, mimetype });
+
+  const _path = "../" + file.path
+
+  try {
+    const steam = createReadStream(_path)
+    createPrivateNoteWithAttachments(steam)
+  }
+  catch (e) {
+    console.log("Err at reading saved file")
+    console.log(e)
+  }
 }
 
 const storeUpload = async ({ stream, filename, mimetype }) => {
@@ -65,15 +69,11 @@ const processUpload = async upload => {
   const { createReadStream, filename, mimetype } = await upload;
   const stream = createReadStream();
 
-  const file = await storeUpload({ stream, filename, mimetype });
-
   // Use these methods to updaload file to FD
-  // const resp1 = await createPrivateNoteWithStoredFile(file.path);
-  // const resp2 = await createPrivateNoteWithAttachments(stream);
-  // return resp1
-  // return resp2
+  // const resp1 = await createPrivateNoteWithStoredFile({ stream, filename, mimetype });
+  const resp2 = await createPrivateNoteWithAttachments(stream);
 
-  return file
+  return true
 };
 
 export default {

@@ -14,6 +14,6 @@ export default gql`
   }
 
   type Mutation {
-    uploadFile(file: Upload!): File
+    uploadFile(file: Upload!): Boolean
   }
 `;

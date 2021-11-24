@@ -5,12 +5,7 @@ import gql from 'graphql-tag';
 
 export const UploadMutation = gql`
   mutation uploadFile($file: Upload!) {
-    uploadFile(file: $file) {
-      path
-      id
-      filename
-      mimetype
-    }
+    uploadFile(file: $file)
   }
 `;
 const FileUpload = () => {
